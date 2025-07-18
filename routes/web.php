@@ -13,6 +13,14 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return response()->json(['message' => 'User Service OK']);
+// $router->get('/', function () use ($router) {
+//     return response()->json(['message' => 'User Service OK']);
+// });
+
+$router->group(['prefix' => 'api'], function() use ($router) {
+    $router->post('/login', 'AuthController@login');
+
+    $router->group(['middleware' => 'auth'], function() use ($router) {
+        $router->get('/me', 'AuthController@index');
+    });
 });
