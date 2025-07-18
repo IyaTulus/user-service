@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\RoleMiddleware;
 use Laravel\Passport\PassportServiceProvider;
 use Tymon\JWTAuth\Providers\LumenServiceProvider;
 
@@ -30,6 +31,8 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 
 $app->withEloquent();
+
+$app->configure('jwt');
 
 /*
 |--------------------------------------------------------------------------
@@ -120,6 +123,7 @@ $app->router->group([
 $app->register(LumenServiceProvider::class);
 $app->routeMiddleware([
     'auth' => Authenticate::class,
+    'role' => RoleMiddleware::class
 ]);
 
 return $app;
