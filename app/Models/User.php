@@ -14,6 +14,7 @@ class User extends Model implements AuthenticatableContract, JWTSubject
     use HasFactory, HasUuids, Authenticatable;
 
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
