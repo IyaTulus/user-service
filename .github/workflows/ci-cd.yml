@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: iyatulus/user-service:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/user-service:latest
