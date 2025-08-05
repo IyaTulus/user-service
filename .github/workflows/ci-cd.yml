@@ -2,7 +2,7 @@ name: CI/CD - user-service (Lumen)
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
 
 jobs:
