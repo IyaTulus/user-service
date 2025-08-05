@@ -27,5 +27,5 @@ jobs:
 
       - name: Push image to Docker Hub
         run: |
-          docker tag user-service your-dockerhub-username/user-service:latest
-          docker push your-dockerhub-username/user-service:latest
+          docker tag user-service iyatulus/user-service:latest
+          docker push iyatulus/user-service:latest
