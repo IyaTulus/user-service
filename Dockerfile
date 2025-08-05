@@ -1,12 +1,21 @@
 FROM php:8.1-fpm
 
-# Install dependencies
-RUN apt update && apt install -y \
-    git unzip zip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql zip
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl \
+    libzip-dev \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql zip mbstring xml
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www
@@ -14,13 +23,12 @@ WORKDIR /var/www
 # Copy project files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Install composer dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader || true
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www
+# Optional: Show error logs (if any)
+RUN ls -la storage/logs || true
 
 EXPOSE 8000
 
-# Run Lumen server
-CMD php -S 0.0.0.0:8000 -t public
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
