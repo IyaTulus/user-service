@@ -1,16 +1,15 @@
-name: CI/CD - user-service (Lumen)
+name: Build & Push Docker Image
 
 on:
   push:
-    branches: [master]
-  pull_request:
+    branches: [main]
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -27,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/user-service:latest
+          tags: iyatulus/user-service:latest
