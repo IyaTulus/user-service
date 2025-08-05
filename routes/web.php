@@ -29,5 +29,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('/users/delete/{id}', 'userController@delete');
         });
     });
-    
 });
