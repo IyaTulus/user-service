@@ -13,6 +13,20 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return response()->json(['message' => 'User Service OK']);
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->post('/login', 'AuthController@login');
+    $router->post('/register', 'AuthController@register');
+
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->get('/me', 'AuthController@index');
+        $router->post('/logout', 'AuthController@logout');
+        $router->post('/refresh', 'AuthController@refresh');
+        
+        $router->group(['middleware' => ['auth:api', 'role:admin']], function() use ($router) {
+            $router->get('/users', 'userController@index');
+            $router->post('/users/store', 'userController@store');
+            $router->post('/users/update/{id}', 'userController@update');
+            $router->post('/users/delete/{id}', 'userController@delete');
+        });
+    });
 });

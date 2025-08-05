@@ -2,18 +2,16 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class UserFactory extends Factory
-{
+class RoleUserFactory extends Factory {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
 
     /**
      * Define the model's default state.
@@ -23,10 +21,8 @@ class UserFactory extends Factory
     public function definition()
     {
        return [
-            'id' => Str::uuid(),
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->email(), // Membuat username unik
-            'password' => app('hash')->make('yourpassword'),
+            'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
+            'role_id' => Role::inRandomOrder()->first()->id ?? Role::factory(),
         ];
     }
 }

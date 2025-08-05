@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\RoleMiddleware;
+use Laravel\Passport\PassportServiceProvider;
+use Tymon\JWTAuth\Providers\LumenServiceProvider;
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -23,9 +28,11 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+$app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
+
+$app->configure('jwt');
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +67,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('auth');
 
 /*
 |--------------------------------------------------------------------------
@@ -111,5 +119,11 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
+
+$app->register(LumenServiceProvider::class);
+$app->routeMiddleware([
+    'auth' => Authenticate::class,
+    'role' => RoleMiddleware::class
+]);
 
 return $app;
