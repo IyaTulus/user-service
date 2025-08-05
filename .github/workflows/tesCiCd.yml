@@ -13,23 +13,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          extensions: mbstring, pdo, pdo_mysql, zip, xml, bcmath
+      - name: Build Docker image (Composer inside Docker)
+        run: docker build -t user-service .
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Copy .env.example to .env
-        run: cp .env.example .env
-
-      - name: Build Docker image (with vendor preinstalled)
-        run: docker build -t your-image-name .
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Push image to Docker Hub
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker tag your-image-name your-dockerhub-username/your-image-name:latest
-          docker push your-dockerhub-username/your-image-name:latest
+          docker tag user-service your-dockerhub-username/user-service:latest
+          docker push your-dockerhub-username/user-service:latest

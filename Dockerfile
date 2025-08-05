@@ -1,13 +1,22 @@
 FROM php:8.2-fpm
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git unzip zip curl libzip-dev libpng-dev libonig-dev libxml2-dev
 
+# Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql zip mbstring xml bcmath
+
+# Install Composer
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+# Copy entire app
 COPY . .
+
+# Install dependencies (inside the image)
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 EXPOSE 8000
 
