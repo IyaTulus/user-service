@@ -1,4 +1,4 @@
-name: CI/CD Laravel Microservice
+name: Build and Push Docker Image
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,20 +14,23 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main # pastikan ambil branch main
 
-      - name: Tampilkan isi file routes
-        run: cat routes/web.php
+      - name: Show current commit
+        run: git log -1
 
-      - name: List semua isi folder (debug)
-        run: ls -R
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image tanpa cache
-        run: docker build --no-cache -t user-service .
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login ke Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Push image ke Docker Hub
-        run: |
-          docker tag user-service iyatulus/user-service:latest
-          docker push iyatulus/user-service:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: iyatulus/user-service:latest
