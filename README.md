@@ -3,7 +3,7 @@
 ## 🛠️ Base URL
 
 ```
-http://yourdomain.com/api
+http://localdomain/api
 ```
 
 ---
