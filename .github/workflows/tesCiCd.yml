@@ -13,26 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
-      - name: Show Git status
-        run: |
-          git branch
-          git log -1
-          ls -la
-          cat routes/web.php
+      - name: Tampilkan isi file routes
+        run: cat routes/web.php
 
-      - name: Remove old Docker image
-        run: docker rmi iyatulus/user-service:latest || true
+      - name: List semua isi folder (debug)
+        run: ls -R
 
-      - name: Build Docker image (no cache)
+      - name: Build Docker image tanpa cache
         run: docker build --no-cache -t user-service .
 
-      - name: Login to Docker Hub
+      - name: Login ke Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Push image to Docker Hub
+      - name: Push image ke Docker Hub
         run: |
           docker tag user-service iyatulus/user-service:latest
           docker push iyatulus/user-service:latest
